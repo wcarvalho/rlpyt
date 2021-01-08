@@ -58,6 +58,8 @@ def logger_context(
         print(f"logger_context received log_dir outside of {LOG_DIR}: "
             f"prepending by {LOG_DIR}/local/<yyyymmdd>/<hhmmss>/")
         exp_dir = get_log_dir(log_dir)
+
+    # import ipdb; ipdb.set_trace()
     tabular_log_file = osp.join(exp_dir, "progress.csv")
     text_log_file = osp.join(exp_dir, "debug.log")
     params_log_file = osp.join(exp_dir, "params.json")

@@ -123,12 +123,17 @@ def torchify_buffer(buffer_):
     namedarraytuples, NamedTuples, and NamedArrayTuples, and a new, matching
     structure will be returned. ``None`` fields remain ``None``, and torch
     tensors are left alone."""
+
     if buffer_ is None:
         return
     if isinstance(buffer_, np.ndarray):
         return torch.from_numpy(buffer_)
     elif isinstance(buffer_, torch.Tensor):
         return buffer_
+    elif isinstance(buffer_, int):
+        return torch.tensor(buffer_)
+    elif isinstance(buffer_, float):
+        return torch.tensor(buffer_)
     contents = tuple(torchify_buffer(b) for b in buffer_)
     if type(buffer_) is tuple:  # tuple, namedtuple instantiate differently.
         return contents
@@ -147,6 +152,10 @@ def numpify_buffer(buffer_):
         return buffer_.cpu().numpy()
     elif isinstance(buffer_, np.ndarray):
         return buffer_
+    elif isinstance(buffer_, int):
+        return np.array(buffer_)
+    elif isinstance(buffer_, float):
+        return np.array(buffer_)
     contents = tuple(numpify_buffer(b) for b in buffer_)
     if type(buffer_) is tuple:
         return contents

@@ -80,6 +80,7 @@ class BaseAgent:
             share_memory (bool): whether to use shared memory for model parameters.
         """
         self.env_model_kwargs = self.make_env_to_model_kwargs(env_spaces)
+        # import ipdb; ipdb.set_trace()
         self.model = self.ModelCls(**self.env_model_kwargs,
             **self.model_kwargs)
         if share_memory:

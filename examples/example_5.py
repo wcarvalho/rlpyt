@@ -1,9 +1,10 @@
 
 """
-Parallel sampler version of Atari DQN.  Increasing the number of parallel
-environmnets (sampler batch_B) should improve the efficiency of the forward
-pass for action sampling on the GPU.  Using a larger batch size in the algorithm
-should improve the efficiency of the forward/backward passes during training.
+Parallel sampler version of Atari DQN.  
+- Increasing the number of parallel environmnets (sampler batch_B) should improve 
+  the efficiency of the forward pass for action sampling on the GPU. 
+- Using a larger batch size in the algorithm should improve the efficiency 
+  of the forward/backward passes during training.
 (But both settings may impact hyperparameter selection and learning.)
 
 """
@@ -19,8 +20,8 @@ from rlpyt.utils.logging.context import logger_context
 def build_and_train(game="pong", run_ID=0, cuda_idx=None, n_parallel=2):
     config = dict(
         env=dict(game=game),
-        algo=dict(batch_size=128),
-        sampler=dict(batch_T=2, batch_B=32),
+        algo=dict(batch_size=512),
+        sampler=dict(batch_T=2, batch_B=128),
     )
     sampler = GpuSampler(
         EnvCls=AtariEnv,
@@ -42,7 +43,7 @@ def build_and_train(game="pong", run_ID=0, cuda_idx=None, n_parallel=2):
         agent=agent,
         sampler=sampler,
         n_steps=50e6,
-        log_interval_steps=1e3,
+        log_interval_steps=1e4,
         affinity=dict(cuda_idx=cuda_idx, workers_cpus=list(range(n_parallel))),
     )
     name = "dqn_" + game

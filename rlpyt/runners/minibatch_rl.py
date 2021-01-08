@@ -298,18 +298,31 @@ class MinibatchRlEval(MinibatchRlBase):
         ``algo.optimize_agent()``.  Pauses to evaluate the agent at the
         specified log interval.
         """
+        
+        # sets up buffers, agent, etc.
         n_itr = self.startup()
-        with logger.prefix(f"itr #0 "):
+
+
+        # evaluate initial agent and log information
+        with logger.prefix(f"itr #0/{n_itr} "):
             eval_traj_infos, eval_time = self.evaluate_agent(0)
             self.log_diagnostics(0, eval_traj_infos, eval_time)
+
+
         for itr in range(n_itr):
             logger.set_iteration(itr)
-            with logger.prefix(f"itr #{itr} "):
+            with logger.prefix(f"itr #{itr}/{n_itr} "):
+
+                # update samples
                 self.agent.sample_mode(itr)
                 samples, traj_infos = self.sampler.obtain_samples(itr)
+
+                # train from samples
                 self.agent.train_mode(itr)
                 opt_info = self.algo.optimize_agent(itr, samples)
                 self.store_diagnostics(itr, traj_infos, opt_info)
+
+                # evaluate agent at some regular interval
                 if (itr + 1) % self.log_interval_itrs == 0:
                     eval_traj_infos, eval_time = self.evaluate_agent(itr)
                     self.log_diagnostics(itr, eval_traj_infos, eval_time)

@@ -26,7 +26,11 @@ def build_samples_buffer(agent, env, batch_spec, bootstrap_value=False,
             get_example_outputs(agent, env, examples)
 
     T, B = batch_spec
-    all_action = buffer_from_example(examples["action"], (T + 1, B), agent_shared)
+    try:
+        all_action = buffer_from_example(examples["action"], (T + 1, B), agent_shared)
+    except Exception as e:
+        get_example_outputs(agent, env, examples)
+        raise e
     action = all_action[1:]
     prev_action = all_action[:-1]  # Writing to action will populate prev_action.
     agent_info = buffer_from_example(examples["agent_info"], (T, B), agent_shared)
